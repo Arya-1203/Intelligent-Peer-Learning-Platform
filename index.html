@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPLP - Intelligent Peer Learning Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="description" content="Intelligent Peer Learning Platform - AI-powered education platform with peer matching, real-time chat, and predictive analytics">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="modal hidden" id="login-modal">
+        <div class="modal-backdrop" onclick="closeLoginModal()"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Welcome to IPLP</h2>
+                <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showLogin()">Login</button>
+                    <button class="auth-tab" onclick="showSignup()">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="login-password" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+                
+                <!-- Signup Form -->
+                <form id="signup-form" class="auth-form hidden">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="signup-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="signup-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="signup-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Role</label>
+                        <select class="form-control" id="signup-role" required>
+                            <option value="">Select your role</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Sign Up</button>
+                </form>
+                
+                <div class="auth-demo">
+                    <h4>Demo Accounts:</h4>
+                    <div class="demo-accounts">
+                        <button class="btn btn--outline btn--sm" onclick="loginDemo('john@student.com')">Student Demo</button>
+                        <button class="btn btn--outline btn--sm" onclick="loginDemo('sarah@teacher.com')">Teacher Demo</button>
+                        <button class="btn btn--outline btn--sm" onclick="loginDemo('mike@admin.com')">Admin Demo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="app" class="hidden">
+        <!-- Sidebar -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>IPLP</h2>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            <div class="sidebar-menu" id="sidebar-menu">
+                <!-- Menu items will be populated by JavaScript based on user role -->
+            </div>
+            <div class="sidebar-footer">
+                <div class="user-info" id="user-info">
+                    <div class="user-avatar" id="user-avatar">👤</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-name">User</div>
+                        <div class="user-role" id="user-role">Role</div>
+                    </div>
+                </div>
+                <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <button class="mobile-sidebar-toggle" onclick="toggleSidebar()">☰</button>
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <button class="btn btn--secondary" id="notifications-btn" onclick="toggleNotifications()">
+                        🔔 <span class="notification-badge" id="notification-count">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Notifications Panel -->
+            <div class="notifications-panel hidden" id="notifications-panel">
+                <div class="notifications-header">
+                    <h3>Notifications</h3>
+                    <button onclick="toggleNotifications()">×</button>
+                </div>
+                <div class="notifications-list" id="notifications-list">
+                    <!-- Notifications will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Page Content -->
+            <div class="page-content" id="page-content">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-spinner"></div>
+        <p>Loading IPLP...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container">
+        <!-- Toast messages will be added here -->
+    </div>
+
+    <!-- Course Modal -->
+    <div class="modal hidden" id="course-modal">
+        <div class="modal-backdrop" onclick="closeCourseModal()"></div>
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 id="course-modal-title">Course Details</h2>
+                <button class="modal-close" onclick="closeCourseModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="course-modal-body">
+                <!-- Course content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div class="modal hidden" id="chat-modal">
+        <div class="modal-backdrop" onclick="closeChatModal()"></div>
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2 id="chat-modal-title">Chat</h2>
+                <button class="modal-close" onclick="closeChatModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-container">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" class="form-control" id="chat-input" placeholder="Type your message...">
+                        <button class="btn btn--primary" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
